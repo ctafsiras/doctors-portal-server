@@ -2,7 +2,6 @@ const express = require('express')
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const { regexpToText } = require('nodemon/lib/utils');
 const res = require('express/lib/response');
 const app = express();
 require('dotenv').config()
@@ -11,10 +10,8 @@ const port = process.env.PORT || 4000
 app.use(cors());
 app.use(express.json());
 
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ttwqk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
 
 function verifyToken(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -43,7 +40,7 @@ async function run() {
 
         //admin check
 
-        app.get('/admin/:email', verifyToken,async (req, res) => {
+        app.get('/admin/:email', verifyToken, async (req, res) => {
             const email = req.decoded.email;
             const user = await usersCollection.findOne({ email });
             const adminRole = user.role === 'admin'
@@ -84,7 +81,6 @@ async function run() {
             res.send({ result, token })
         })
 
-
         app.get('/service', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
@@ -92,12 +88,10 @@ async function run() {
             res.send(services);
         })
 
-
         // available service api
 
         app.get('/available', async (req, res) => {
             const date = req.query.date;
-
 
             const services = await serviceCollection.find().toArray();
 
@@ -112,7 +106,6 @@ async function run() {
 
             res.send(services);
         })
-
 
         //get booking api
 
